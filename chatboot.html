@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Simple Campus Chatbot</title>
+<style>
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #eef2f7;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+  }
+  .chat-container {
+    width: 360px;
+    height: 550px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .chat-header {
+    background: #007bff;
+    color: white;
+    padding: 15px;
+    font-weight: 600;
+    font-size: 20px;
+    text-align: center;
+  }
+  .chat-messages {
+    flex: 1;
+    padding: 15px;
+    overflow-y: auto;
+    background: #f9f9f9;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .message {
+    max-width: 75%;
+    padding: 10px 15px;
+    border-radius: 20px;
+    font-size: 14px;
+    line-height: 1.4;
+    word-wrap: break-word;
+  }
+  .bot-message {
+    background: #e1eaff;
+    color: #1a1a1a;
+    align-self: flex-start;
+  }
+  .user-message {
+    background: #dcf8c6;
+    color: #1a1a1a;
+    align-self: flex-end;
+  }
+  .chat-input-area {
+    padding: 15px;
+    border-top: 1px solid #ddd;
+    display: flex;
+    gap: 10px;
+  }
+  .chat-input-area input[type="text"] {
+    flex-grow: 1;
+    padding: 12px 15px;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    outline: none;
+    font-size: 14px;
+  }
+  .chat-input-area button {
+    background: #007bff;
+    border: none;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+  }
+  .chat-input-area button:hover {
+    background: #0056b3;
+  }
+</style>
+</head>
+<body>
+  <div class="chat-container" role="main" aria-label="Campus assistant chatbot">
+    <header class="chat-header">Campus Assistant </header>
+      <header class="chat-header">Type library , cafeteria , schedule </header>
+
+    <section class="chat-messages" id="chat-messages" aria-live="polite" aria-atomic="true" tabindex="0">
+      <div class="message bot-message">Hello! I am your campus assistant. How can I help you?</div>
+    </section>
+
+    <form class="chat-input-area" id="chat-form" autocomplete="off">
+      <input type="text" id="user-input" placeholder="Type your message..." aria-label="Chat message input" required />
+      <button type="submit">Send</button>
+    </form>
+  </div>
+
+  <script>
+    const chatMessages = document.getElementById('chat-messages');
+    const chatForm = document.getElementById('chat-form');
+    const userInput = document.getElementById('user-input');
+
+    // Rule-based bot responses
+    function getBotResponse(message) {
+      const msg = message.toLowerCase();
+
+      if(msg.includes('library')) {
+        return "The library is located in Block B, next to the auditorium.";
+      } else if(msg.includes('cafeteria') || msg.includes('food')) {
+        return "The cafeteria is on the first floor near the main entrance.";
+      } else if(msg.includes('schedule') || msg.includes('time table')) {
+        return "You can view the class schedule on the campus portal under 'Timetable'.";
+      } else if(msg.includes('help') || msg.includes('assist')) {
+        return "I'm here to help! Ask me about campus locations, schedules, or services.";
+      } else if(msg.trim() === '') {
+        return "Please type a message to get assistance.";
+      } else {
+        return "Sorry, I didn't understand that. Can you please rephrase?";
+      }
+    }
+
+    function addMessage(text, sender) {
+      const msgDiv = document.createElement('div');
+      msgDiv.classList.add('message');
+      msgDiv.classList.add(sender === 'bot' ? 'bot-message' : 'user-message');
+      msgDiv.textContent = text;
+      chatMessages.appendChild(msgDiv);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    chatForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const userText = userInput.value.trim();
+      if(userText === '') return;
+
+      addMessage(userText, 'user');
+
+      const botReply = getBotResponse(userText);
+
+      // Simulate typing delay
+      setTimeout(() => {
+        addMessage(botReply, 'bot');
+      }, 600);
+
+      userInput.value = '';
+      userInput.focus();
+    });
+  </script>
+</body>
+</html>
